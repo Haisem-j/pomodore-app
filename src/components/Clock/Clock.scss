@@ -1,0 +1,50 @@
+.clock-top-row{
+    height: 15%;
+    background-color: #147BFF;
+    color: #fff;
+    text-align: center;
+    
+    
+    .col{
+        border: solid .1px black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        
+        .clock-col-active{
+            background-color: #0f5fc7;
+        }
+    }
+    h4{
+        font-weight: 300;
+    }
+
+
+    
+}
+
+.clock-timer-row{
+    height: 55%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    h1{
+        font-size: 6rem;
+        font-weight: 300;
+    }
+}
+
+.clock-button-row{
+    height: 30%;
+
+    .center{
+        display: flex;
+        justify-content: center;
+    }
+
+    .btn{
+        width: 160px;
+       
+    }
+}

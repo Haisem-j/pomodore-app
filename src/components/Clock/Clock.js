@@ -1,0 +1,141 @@
+// All packages needed
+import React from 'react';
+import { Row, Col, Container, Button } from 'react-bootstrap';
+
+// Styles imported here
+import './Clock.scss'
+
+
+class Clock extends React.Component {
+
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            minutes: 0,
+            seconds: 0,
+            flag: false,
+            timer: 0,
+            isPaused: false
+        }
+
+        this.handleTime = this.handleTime.bind(this);
+        this.setCountDown = this.setCountDown.bind(this);
+        this.pauseButton = this.pauseButton.bind(this);
+        this.resetTimer = this.resetTimer.bind(this);
+        this.clearAllIntervals = this.clearAllIntervals.bind(this);
+    }
+
+    componentDidMount() {
+        this.myInterval = 0
+        this.setState({
+            minutes: 25,
+            timer: 25
+        })
+    }
+
+    handleTime(e) {
+        this.clearAllIntervals();
+        this.setState({
+            minutes: parseInt(e.target.id),
+            seconds: 0,
+            timer: parseInt(e.target.id),
+            isPaused: false
+        })
+    }
+
+    setCountDown() {
+        this.myInterval = setInterval(() => {
+            if(!this.state.isPaused){
+                if (this.state.seconds === 0 && this.state.minutes !== 0) {
+                    let tempMinutes = this.state.minutes - 1;
+                    this.setState({
+                        minutes: tempMinutes,
+                        seconds: 59
+                    })
+                } else if (this.state.seconds !== 0 && this.state.minutes !== 0) {
+                    let tempSeconds = this.state.seconds - 1;
+                    this.setState({
+                        seconds: tempSeconds
+                    })
+                } else if (this.state.seconds === 0 && this.state.minutes === 0) {
+                    this.clearAllIntervals();
+                    /* 
+                        Send Request Here!!!!
+                    */
+                    this.setState({
+                        flag: true
+                    })
+                }
+            }
+        }, 1000)
+
+    }
+
+    pauseButton() {
+        this.setState({
+            isPaused: this.state.isPaused ? false : true
+        })
+        console.log(this.state.isPaused);
+    }
+
+    resetTimer() {
+        let temp = this.state.timer
+        this.clearAllIntervals()
+        this.setState({
+            minutes: temp,
+            seconds: 0,
+            flag: false,
+            isPaused: false
+        })
+    }
+
+    clearAllIntervals(){
+        clearInterval(this.myInterval)
+        this.myInterval = 0
+    }
+
+    render() {
+        return (
+            <React.Fragment>
+                <Container>
+                    <Row className="clock-top-row">
+                        <Col onClick={this.handleTime} id="25">
+                            <h4 id="25">Pomodoro (25 min)</h4>
+                        </Col>
+                        <Col onClick={this.handleTime} id="5">
+                            <h4 id="5">Short Break (5 min)</h4>
+                        </Col>
+                        <Col onClick={this.handleTime} id="10">
+                            <h4 id="10">Long Break (10 min)</h4>
+                        </Col>
+                    </Row>
+                    <Row className="clock-timer-row">
+                        <h1>{this.state.minutes}:{
+                            this.state.seconds < 10 ? '0' + this.state.seconds : this.state.seconds
+                        }</h1>
+                    </Row>
+                    <Row className="clock-button-row">
+                        <Col>
+                            <div className="center">
+                                <Button variant="primary" size="lg" onClick={this.setCountDown}>Start</Button>
+                            </div>
+                        </Col>
+                        <Col>
+                            <div className="center">
+                                <Button variant="primary" size="lg" onClick={this.pauseButton}>Pause/Resume</Button>
+                            </div>
+                        </Col>
+                        <Col>
+                            <div className="center">
+                                <Button variant="primary" size="lg" onClick={this.resetTimer}>Reset</Button>
+                            </div>
+                        </Col>
+                    </Row>
+                </Container>
+            </React.Fragment>
+        )
+    }
+}
+
+export default Clock;
