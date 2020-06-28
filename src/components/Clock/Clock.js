@@ -16,7 +16,8 @@ class Clock extends React.Component {
             seconds: 0,
             flag: false,
             timer: 0,
-            isPaused: false
+            isPaused: false,
+            curDate: ''
         }
 
         this.handleTime = this.handleTime.bind(this);
@@ -28,9 +29,15 @@ class Clock extends React.Component {
 
     componentDidMount() {
         this.myInterval = 0
+        let today = new Date();
+        let day = today.getDate() < 10 ? '0' + today.getDate() : today.getDate();
+        let month = (today.getMonth() + 1) < 10 ? '0' + (today.getMonth() + 1) : today.getMonth() + 1;
+        let year = today.getFullYear();
+        let tempDate = day + '/' + month + '/' + year;
         this.setState({
             minutes: 25,
-            timer: 25
+            timer: 25,
+            curDate: tempDate
         })
     }
 
