@@ -2,7 +2,7 @@
 import React from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { URL_LINK } from '../../assets/variables/global';
+import { URL_LINK } from '../../utils/global';
 
 
 // Styles imported here
@@ -41,7 +41,7 @@ class SignUp extends React.Component {
             password: this.state.password
         }
         try {
-            let response = await fetch(`${URL_LINK}api/user/register`, {
+            let response = await fetch(`${URL_LINK}/api/user/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8'
