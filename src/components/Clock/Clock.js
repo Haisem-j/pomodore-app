@@ -1,6 +1,7 @@
 // All packages needed
 import React from 'react';
 import { Row, Col, Container, Button } from 'react-bootstrap';
+import auth from '../../utils/auth';
 
 // Styles imported here
 import './Clock.scss'
@@ -53,7 +54,7 @@ class Clock extends React.Component {
 
     setCountDown() {
         this.myInterval = setInterval(() => {
-            if(!this.state.isPaused){
+            if (!this.state.isPaused) {
                 if (this.state.seconds === 0 && this.state.minutes !== 0) {
                     let tempMinutes = this.state.minutes - 1;
                     this.setState({
@@ -97,7 +98,7 @@ class Clock extends React.Component {
         })
     }
 
-    clearAllIntervals(){
+    clearAllIntervals() {
         clearInterval(this.myInterval)
         this.myInterval = 0
     }
@@ -118,6 +119,7 @@ class Clock extends React.Component {
                         </Col>
                     </Row>
                     <Row className="clock-timer-row">
+                        <h4>Hey {auth.getUser()}</h4>
                         <h1>{this.state.minutes}:{
                             this.state.seconds < 10 ? '0' + this.state.seconds : this.state.seconds
                         }</h1>

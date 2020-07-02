@@ -3,6 +3,7 @@ import React from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { URL_LINK } from '../../utils/global';
+import auth from '../../utils/auth';
 
 
 
@@ -22,7 +23,6 @@ class Login extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handlePassword = this.handlePassword.bind(this);
         this.handleUsername = this.handleUsername.bind(this);
-        this.handleLogin = this.handleLogin.bind(this)
     }
 
     handleUsername(e) {
@@ -52,19 +52,18 @@ class Login extends React.Component {
                 body: JSON.stringify(user)
             })
             let result = await response.json();
-            console.log(result);
+            await auth.login(result);
+            this.props.history.push('/dashboard');
+
         } catch (error) {
             console.log(error);
         }
     }
 
-    handleLogin(token){
-        this.props.history.push('/signup');
-    }
     render() {
         return (
             <div className="auth-route d-flex justify-content-center align-items-center">
-                <Form className="rounded" onSubmit={this.handleLogin}>
+                <Form className="rounded" onSubmit={this.handleSubmit}>
                     <h3>Sign in</h3>
                     <Form.Group controlId="formGroupText">
                         <Form.Label>Username</Form.Label>
