@@ -2,6 +2,7 @@
 import React from 'react';
 import { Row, Col, Container, Button } from 'react-bootstrap';
 import auth from '../../utils/auth';
+import { URL_LINK } from '../../utils/global';
 
 // Styles imported here
 import './Clock.scss'
@@ -26,6 +27,8 @@ class Clock extends React.Component {
         this.pauseButton = this.pauseButton.bind(this);
         this.resetTimer = this.resetTimer.bind(this);
         this.clearAllIntervals = this.clearAllIntervals.bind(this);
+        this.sendPost = this.sendPost.bind(this);
+        this.testClick = this.testClick.bind(this)
     }
 
     componentDidMount() {
@@ -35,6 +38,7 @@ class Clock extends React.Component {
         let month = (today.getMonth() + 1) < 10 ? '0' + (today.getMonth() + 1) : today.getMonth() + 1;
         let year = today.getFullYear();
         let tempDate = day + '/' + month + '/' + year;
+
         this.setState({
             minutes: 25,
             timer: 25,
@@ -69,8 +73,11 @@ class Clock extends React.Component {
                 } else if (this.state.seconds === 0 && this.state.minutes === 0) {
                     this.clearAllIntervals();
                     /* 
-                        Send Request Here!!!!
+                        Send Current date WITH +1 tomato
                     */
+                   if (this.state.timer === 25){
+                       this.sendPost();
+                   }
                     this.setState({
                         flag: true
                     })
@@ -103,6 +110,29 @@ class Clock extends React.Component {
         this.myInterval = 0
     }
 
+    async sendPost(){
+        let tempSend = {
+            curDate: this.state.curDate
+        }
+        try {
+            let response = await fetch(`${URL_LINK}/api/posts/postOne`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8',
+                    'auth-token': auth.useToken().token
+                },
+                body: JSON.stringify(tempSend)
+            })
+          let data = await response.json();
+          console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    testClick(){
+        this.sendPost()
+    }
     render() {
         return (
             <React.Fragment>
