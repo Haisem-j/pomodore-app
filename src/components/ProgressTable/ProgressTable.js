@@ -8,7 +8,6 @@ import Loader from '../Loader/Loader';
 // Style imports
 import './ProgressTable.scss';
 import Tomato from '../../assets/tomato.png';
-import ProgressBar from 'react-bootstrap/ProgressBar'
 
 
 class ProgressTable extends React.Component {
@@ -25,9 +24,11 @@ class ProgressTable extends React.Component {
         this.grabTomatos = this.grabTomatos.bind(this);
         this.loadingCheck = this.loadingCheck.bind(this);
         this.tomatoReturn = this.tomatoReturn.bind(this);
+        this.callApi = this.callApi.bind(this);
     }
 
     async componentDidMount() {
+        this.callInterval = 0;
         let today = new Date();
         let day = today.getDate() < 10 ? '0' + today.getDate() : today.getDate();
         let month = (today.getMonth() + 1) < 10 ? '0' + (today.getMonth() + 1) : today.getMonth() + 1;
@@ -47,7 +48,6 @@ class ProgressTable extends React.Component {
                 body: JSON.stringify(tempSend)
             })
             let data = await response.json()
-            console.log(data);
             this.setState({
                 curDate: tempDate,
                 tomatos: data.tomatos,
@@ -57,6 +57,13 @@ class ProgressTable extends React.Component {
             console.log(error);
         }
 
+    }
+
+    callApi(){
+        this.callInterval = setInterval(() =>{
+            console.log('Request has been sent!');
+            this.grabTomatos();
+        }, 60000)
     }
 
     async grabTomatos() {
@@ -73,7 +80,12 @@ class ProgressTable extends React.Component {
                 body: JSON.stringify(tempSend)
             })
             let data = await response.json()
-            console.log(data);
+            console.log('Response has been recieved! Expect a re render!!');
+            this.setState({
+                curDate: this.state.curDate,
+                tomatos: data.tomatos,
+                allDays: data.allDays
+            })
         } catch (error) {
             console.log(error);
         }
@@ -84,10 +96,12 @@ class ProgressTable extends React.Component {
             loading: true
         })
         console.log('DONE');
+        this.callApi();
     }
 
     loadTables() {
-        if (this.state.tomatos === 0 && this.state.allDays.length() === 0) {
+        // if todays tomatos are 0 and user has no records
+        if (this.state.tomatos === 0 && this.state.allDays.length === 0) {
             return (
                 <React.Fragment>
                     <Row>
@@ -96,6 +110,7 @@ class ProgressTable extends React.Component {
                     </Row>
                 </React.Fragment>
             )
+            // if todays tomatos are 0 but user has records
         } else if (this.state.tomatos === 0) {
             return (
                 <React.Fragment>
@@ -105,14 +120,68 @@ class ProgressTable extends React.Component {
                     </Row>
                     {this.state.allDays.map(item => {
                         return (
-                        <Row>
-                            <Col className="progress-col">{item.Day}</Col>
-                            <Col xs={6} className="progress-col">
-                            {this.tomatoReturn(item.tomatos.length())}
-                            </Col>
-                        </Row>
+                            <Row>
+                                <Col className="progress-col" xs={3}>{item.Day}</Col>
+                                <Col className="progress-col">
+                                    {this.tomatoReturn(item.tomato).map(item => {
+                                        return (
+                                            <React.Fragment>
+                                                {item}
+                                            </React.Fragment>
+                                        )
+                                    })}
+                                </Col>
+                            </Row>
                         )
                     })}
+                </React.Fragment>
+            )
+            // if todays tomatos are more then 0 and user has records
+        } else if(this.state.tomatos > 0){
+            return (
+                <React.Fragment>
+                    <Row>
+                        <Col className="progress-col" xs={3}>Today</Col>
+                        <Col className="progress-col">{this.tomatoReturn(this.state.tomatos).map(item => {
+                            return (
+                                <React.Fragment>
+                                    {item}
+                                </React.Fragment>
+                            )
+                        })}</Col>
+                    </Row>
+                    {this.state.allDays.map(item => {
+                        return (
+                            <Row>
+                                <Col className="progress-col" xs={3}>{item.Day}</Col>
+                                <Col className="progress-col">
+                                    {this.tomatoReturn(item.tomato).map(item => {
+                                        return (
+                                            <React.Fragment>
+                                                {item}
+                                            </React.Fragment>
+                                        )
+                                    })}
+                                </Col>
+                            </Row>
+                        )
+                    })}
+                </React.Fragment>
+            )
+            //if todays tomatos are more then 0 and user has no previous records
+        }else{
+            return(
+                <React.Fragment>
+                    <Row>
+                        <Col className="progress-col" xs={3}>Today</Col>
+                        <Col className="progress-col">{this.tomatoReturn(this.state.tomatos).map(item => {
+                            return (
+                                <React.Fragment>
+                                    {item}
+                                </React.Fragment>
+                            )
+                        })}</Col>
+                    </Row>
                 </React.Fragment>
             )
         }
@@ -122,14 +191,14 @@ class ProgressTable extends React.Component {
 
     tomatoReturn(num) {
         let content = [];
-        for (let i = 0; i < num.length(); i++) {
-            content.push(<img src={Tomato} alt="tomato" id="tomato" className="mr-2" />)
+        for (let i = 0; i < num; i++) {
+            content.push(<img src={Tomato} alt="tomato" id="tomato" className="mr-2" />);
         }
-        return content
+        return content;
     }
 
+    
     render() {
-        console.log(this.state);
         if (!this.state.loading) {
             return (
                 <Container>
@@ -152,45 +221,3 @@ class ProgressTable extends React.Component {
 }
 
 export default ProgressTable;
-
-{/* <Row>
-    <Col className="progress-row">Date</Col>
-    <Col xs={6} className="progress-row" >Tomato's</Col>
-    <Col className="progress-row">Hours Studied</Col>
-</Row>
-<Row>
-    <Col className="progress-col">Today</Col>
-    <Col xs={6} className="progress-col">
-        <img src={Tomato} alt="tomato" id="tomato" className="mr-2"/>
-        <img src={Tomato} alt="tomato" id="tomato" className="mr-2"/>
-        <img src={Tomato} alt="tomato" id="tomato" className="mr-2"/>
-        <img src={Tomato} alt="tomato" id="tomato" className="mr-2"/>
-        <img src={Tomato} alt="tomato" id="tomato" className="mr-2"/>
-        <img src={Tomato} alt="tomato" id="tomato" className="mr-2"/>
-    </Col>
-    <Col className="progress-col">7</Col>
-</Row>
-<Row>
-    <Col className="progress-col">Today</Col>
-    <Col xs={6} className="progress-col">
-        <img src={Tomato} alt="tomato" id="tomato" className="mr-2"/>
-        <img src={Tomato} alt="tomato" id="tomato" className="mr-2"/>
-        <img src={Tomato} alt="tomato" id="tomato" className="mr-2"/>
-        <img src={Tomato} alt="tomato" id="tomato" className="mr-2"/>
-        <img src={Tomato} alt="tomato" id="tomato" className="mr-2"/>
-        <img src={Tomato} alt="tomato" id="tomato" className="mr-2"/>
-        <img src={Tomato} alt="tomato" id="tomato" className="mr-2"/>
-        <img src={Tomato} alt="tomato" id="tomato" className="mr-2"/>
-        <img src={Tomato} alt="tomato" id="tomato" className="mr-2"/>
-        <img src={Tomato} alt="tomato" id="tomato" className="mr-2"/>
-    </Col>
-    <Col className="progress-col">7</Col>
-</Row>
-<Row>
-    <Col className="progress-col">Today</Col>
-    <Col xs={6} className="progress-col">
-        <img src={Tomato} alt="tomato" id="tomato" className="mr-2"/>
-        <img src={Tomato} alt="tomato" id="tomato" className="mr-2"/>
-    </Col>
-    <Col className="progress-col">7</Col>
-</Row> */}
