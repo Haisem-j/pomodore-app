@@ -59,11 +59,10 @@ class ProgressTable extends React.Component {
 
     }
 
+
     callApi(){
-        this.callInterval = setInterval(() =>{
             console.log('Request has been sent!');
             this.grabTomatos();
-        }, 60000)
     }
 
     async grabTomatos() {
@@ -96,7 +95,6 @@ class ProgressTable extends React.Component {
             loading: true
         })
         console.log('DONE');
-        this.callApi();
     }
 
     loadTables() {

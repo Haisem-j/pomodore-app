@@ -3,6 +3,8 @@ import React from 'react';
 import { Row, Col, Container, Button } from 'react-bootstrap';
 import auth from '../../utils/auth';
 import { URL_LINK } from '../../utils/global';
+import mp3 from '../../assets/beep.wav'
+
 
 // Styles imported here
 import './Clock.scss'
@@ -28,10 +30,13 @@ class Clock extends React.Component {
         this.resetTimer = this.resetTimer.bind(this);
         this.clearAllIntervals = this.clearAllIntervals.bind(this);
         this.sendPost = this.sendPost.bind(this);
-        this.testClick = this.testClick.bind(this)
+        this.testClick = this.testClick.bind(this);
+        this.audio = new Audio(mp3);
+        this.playBeep = this.playBeep.bind(this);
     }
 
     componentDidMount() {
+
         this.myInterval = 0
         let today = new Date();
         let day = today.getDate() < 10 ? '0' + today.getDate() : today.getDate();
@@ -45,6 +50,8 @@ class Clock extends React.Component {
             curDate: tempDate
         })
     }
+
+
 
     handleTime(e) {
         this.clearAllIntervals();
@@ -75,9 +82,11 @@ class Clock extends React.Component {
                     /* 
                         Send Current date WITH +1 tomato
                     */
-                   if (this.state.timer === 25){
-                       this.sendPost();
-                   }
+                    if (this.state.timer === 25) {
+                        this.sendPost();
+                        this.props.checkStatus();
+                    }
+                    this.playBeep();
                     this.setState({
                         flag: true
                     })
@@ -85,6 +94,10 @@ class Clock extends React.Component {
             }
         }, 1000)
 
+    }
+
+    playBeep(){
+        this.audio.play()
     }
 
     pauseButton() {
@@ -110,7 +123,7 @@ class Clock extends React.Component {
         this.myInterval = 0
     }
 
-    async sendPost(){
+    async sendPost() {
         let tempSend = {
             curDate: this.state.curDate
         }
@@ -123,19 +136,20 @@ class Clock extends React.Component {
                 },
                 body: JSON.stringify(tempSend)
             })
-          let data = await response.json();
-          console.log(data);
+            let data = await response.json();
+            console.log(data);
         } catch (error) {
             console.log(error);
         }
     }
 
-    testClick(){
+    testClick() {
         this.sendPost()
     }
     render() {
         return (
             <React.Fragment>
+
                 <Container>
                     <Row className="clock-top-row">
                         <Col onClick={this.handleTime} id="25">

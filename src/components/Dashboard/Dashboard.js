@@ -8,14 +8,29 @@ import ProgressTable from '../ProgressTable/ProgressTable';
 
 class Dashboard extends React.Component {
 
+    constructor(props) {
+        super(props)
+
+        this.child = React.createRef();
+        this.checkStatus = this.checkStatus.bind(this)
+        this.callAgain = this.callAgain.bind(this)
+    }
+
+    checkStatus(){
+        this.callAgain()
+    }
+
+    callAgain(){
+        this.child.current.callApi();
+    }
     render() {
         return (
             <Container className="tempC">
                 <Row className="app-clock">
-                    <Clock />
+                    <Clock checkStatus={this.checkStatus}/>
                 </Row>
                 <Row className="app-table">
-                    <ProgressTable />
+                    <ProgressTable ref={this.child}/>
                 </Row>
             </Container>
         )
