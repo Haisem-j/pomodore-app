@@ -1,6 +1,6 @@
 // All packages needed
 import React from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Alert } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { URL_LINK } from '../../utils/global';
 
@@ -15,12 +15,15 @@ class SignUp extends React.Component {
 
         this.state = {
             username: "",
-            password: ""
+            password: "",
+            register: false,
+            registering: false
         }
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handlePassword = this.handlePassword.bind(this);
         this.handleUsername = this.handleUsername.bind(this);
+        this.registeringUser = this.registeringUser.bind(this)
     }
 
     handleUsername(e) {
@@ -35,6 +38,7 @@ class SignUp extends React.Component {
     }
     async handleSubmit(e) {
         e.preventDefault();
+        this.registeringUser()
         console.log(this.state);
         let user = {
             username: this.state.username,
@@ -48,13 +52,36 @@ class SignUp extends React.Component {
                 },
                 body: JSON.stringify(user)
             })
-            
-            let result = await response.json();
-            console.log(result);
+
+            await response.json();
+            this.registeringUser()
+            this.successfulRegister();
         } catch (error) {
             console.log(error);
         }
 
+    }
+
+    registeringUser() {
+        if (!this.state.registering) {
+            this.setState({
+                registering: true
+            })
+        } else {
+            this.setState({
+                registering: false
+            })
+
+        }
+    }
+
+    successfulRegister() {
+        setTimeout(() => {
+            this.props.history.push('/login')
+        }, 3000)
+        this.setState({
+            register: true
+        })
     }
 
     render() {
@@ -62,6 +89,8 @@ class SignUp extends React.Component {
             <div className="auth-route d-flex justify-content-center align-items-center">
                 <Form className="rounded" onSubmit={this.handleSubmit}>
                     <h3>Sign up</h3>
+                    {this.state.registering ? <Alert variant="info" id="alert-pomo">Registering you...</Alert> : null}
+                    {this.state.register ? <Alert variant="success" id="alert-pomo">Succesfully Registered!!</Alert> : null}
                     <Form.Group controlId="formGroupText">
                         <Form.Label>Username</Form.Label>
                         <Form.Control type="text" placeholder="Enter Username" onChange={this.handleUsername} />
