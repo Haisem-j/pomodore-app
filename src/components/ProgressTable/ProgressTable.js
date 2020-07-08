@@ -116,14 +116,14 @@ class ProgressTable extends React.Component {
                         <Col className="progress-col" xs={3}>Today</Col>
                         <Col className="progress-col">Nothing Today</Col>
                     </Row>
-                    {this.state.allDays.map(item => {
+                    {this.state.allDays.map((item, ind) => {
                         return (
-                            <Row>
+                            <Row key={ind}>
                                 <Col className="progress-col" xs={3}>{item.Day}</Col>
                                 <Col className="progress-col">
-                                    {this.tomatoReturn(item.tomato).map(item => {
+                                    {this.tomatoReturn(item.tomato).map((item, ind) => {
                                         return (
-                                            <React.Fragment>
+                                            <React.Fragment key={ind}>
                                                 {item}
                                             </React.Fragment>
                                         )
@@ -140,22 +140,22 @@ class ProgressTable extends React.Component {
                 <React.Fragment>
                     <Row>
                         <Col className="progress-col" xs={3}>Today</Col>
-                        <Col className="progress-col">{this.tomatoReturn(this.state.tomatos).map(item => {
+                        <Col className="progress-col">{this.tomatoReturn(this.state.tomatos).map((item, ind) => {
                             return (
-                                <React.Fragment>
+                                <React.Fragment key={ind}>
                                     {item}
                                 </React.Fragment>
                             )
                         })}</Col>
                     </Row>
-                    {this.state.allDays.map(item => {
+                    {this.state.allDays.map((item, ind) => {
                         return (
-                            <Row>
+                            <Row key={ind}>
                                 <Col className="progress-col" xs={3}>{item.Day}</Col>
                                 <Col className="progress-col">
-                                    {this.tomatoReturn(item.tomato).map(item => {
+                                    {this.tomatoReturn(item.tomato).map((item, ind) => {
                                         return (
-                                            <React.Fragment>
+                                            <React.Fragment key={ind}>
                                                 {item}
                                             </React.Fragment>
                                         )
@@ -172,9 +172,9 @@ class ProgressTable extends React.Component {
                 <React.Fragment>
                     <Row>
                         <Col className="progress-col" xs={3}>Today</Col>
-                        <Col className="progress-col">{this.tomatoReturn(this.state.tomatos).map(item => {
+                        <Col className="progress-col">{this.tomatoReturn(this.state.tomatos).map((item, ind) => {
                             return (
-                                <React.Fragment>
+                                <React.Fragment key={ind}>
                                     {item}
                                 </React.Fragment>
                             )
