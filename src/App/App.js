@@ -10,6 +10,7 @@ import './App.scss';
 import Login from '../components/Login/Login';
 import SignUp from '../components/SignUp/SignUp';
 import Dashboard from '../components/Dashboard/Dashboard';
+import NoMatch from '../components/NoMatch/NoMatch';
 
 
 const PrivateRoute = ({ component: Component, ...rest }) =>{
@@ -31,6 +32,7 @@ class App extends React.Component {
           <Route path="/login" component={Login} />
           <Route path="/signup" component={SignUp} />
           <PrivateRoute exact path="/dashboard" component={Dashboard} /> 
+          <Route path="*" component={NoMatch} />
           {/* <Route exact path="/" component={Dashboard} /> */}
         </Switch>
       </Router>
